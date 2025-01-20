@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`serializer renders component properties 1`] = `
+"<MyComponentName
+  obj={
+    {
+      bool: true,
+      objectEmpty: {},
+      arrayEmpty: [],
+      arrayNumbers: [
+        1,
+        2,
+        3,
+      ],
+      arrayStrings: [
+        "a",
+        "b",
+        "c",
+      ],
+      methodNormal: [Function],
+      nestedObject: {
+        methodMocked: [MockFunction],
+        stringProperty: "dolor sit amet",
+      },
+      stringProperty: "lorem ipsum",
+      numberProperty: 5,
+    }
+  }
+  arrayObjects={
+    [
+      {
+        firstName: "John",
+        lastName: "Doe",
+      },
+      {
+        firstName: "Jan",
+        lastName: "Kowalski",
+      },
+    ]
+  }
+  bool={false}
+  objectEmpty={{}}
+  arrayEmpty={[]}
+  arrayNumbers={
+    [
+      1,
+      2,
+      3,
+    ]
+  }
+  arrayStrings={
+    [
+      "a",
+      "b",
+      "c",
+    ]
+  }
+  stringProperty="lorem ipsum"
+  numberProperty={6}
+/>"
+`;

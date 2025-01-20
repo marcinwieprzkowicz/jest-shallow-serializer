@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`serializeProperties serializeProperties applies \`      \` indentation 1`] = `
+"      obj={
+        {
+          nested: {
+            value: 5,
+          },
+        }
+      }
+      text="lorem ipsum""
+`;
+
+exports[`serializeProperties serializeProperties applies \`    \` indentation 1`] = `
+"    obj={
+      {
+        nested: {
+          value: 5,
+        },
+      }
+    }
+    text="lorem ipsum""
+`;
+
+exports[`serializeProperties serializeProperties applies \`  \` indentation 1`] = `
+"  obj={
+    {
+      nested: {
+        value: 5,
+      },
+    }
+  }
+  text="lorem ipsum""
+`;
+
+exports[`serializeProperties serializeProperties applies \`\` indentation 1`] = `
+"obj={
+  {
+    nested: {
+      value: 5,
+    },
+  }
+}
+text="lorem ipsum""
+`;

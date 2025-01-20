@@ -1,0 +1,121 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`shallowWrapper \`mock\` function lazy components does not render unresolved components 1`] = `
+<DocumentFragment>
+  <div
+    data-shallow-name="TestComponentSuspense"
+    data-shallow-props="{}"
+  >
+    <h1>
+      Heading
+    </h1>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`shallowWrapper \`mock\` function lazy components renders resolved components 1`] = `
+<DocumentFragment>
+  <div
+    data-shallow-name="TestComponentSuspense"
+    data-shallow-props="{}"
+  >
+    <h1>
+      Heading
+    </h1>
+    <div>
+      I'm lazy
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`shallowWrapper \`mock\` function mocks \`component\` 1`] = `
+<DocumentFragment>
+  <div
+    data-shallow-name="TestComponent"
+    data-shallow-props="{"prop":"lorem ipsum"}"
+  >
+    children
+  </div>
+</DocumentFragment>
+`;
+
+exports[`shallowWrapper \`mock\` function supports circular references 1`] = `
+<DocumentFragment>
+  <div
+    data-shallow-name="TestComponent"
+    data-shallow-props="{"prop":"lorem ipsum","obj":{"nested":{"arr":[{"item":{"value":"lorem ipsum"}}]},"circularReference":"[Circular]"}}"
+  >
+    children
+  </div>
+</DocumentFragment>
+`;
+
+exports[`shallowWrapper \`mock\` function supports functions 1`] = `
+<DocumentFragment>
+  <div
+    data-shallow-name="TestComponent"
+    data-shallow-props="{"prop":"lorem ipsum","obj":{"method":"[Function]","mockMethod":"[MockFunction]"}}"
+  >
+    children
+  </div>
+</DocumentFragment>
+`;
+
+exports[`shallowWrapper \`mock\` function uses \`options.renderAs\` as render tag 1`] = `
+<DocumentFragment>
+  <span
+    data-shallow-name="TestComponent"
+    data-shallow-props="{"prop":"lorem ipsum"}"
+  >
+    children
+  </span>
+</DocumentFragment>
+`;
+
+exports[`shallowWrapper \`mock\` function uses the first tag from the component body 1`] = `
+<DocumentFragment>
+  <table>
+    <tbody>
+      <tr>
+        <td
+          data-shallow-name="TestComponentTd"
+          data-shallow-props="{}"
+        />
+      </tr>
+    </tbody>
+  </table>
+</DocumentFragment>
+`;
+
+exports[`shallowWrapper \`unmock\` function unmocks \`component\` 1`] = `
+<DocumentFragment>
+  <div
+    class="test-component"
+    data-obj="[object Object]"
+    data-prop="lorem ipsum"
+  >
+    <div
+      class="test-component__body"
+    >
+      children
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`shallowWrapper does not mock \`component\` by default 1`] = `
+<DocumentFragment>
+  <div
+    class="test-component"
+    data-obj="[object Object]"
+    data-prop="lorem ipsum"
+  >
+    <div
+      class="test-component__body"
+    >
+      children
+    </div>
+  </div>
+</DocumentFragment>
+`;
