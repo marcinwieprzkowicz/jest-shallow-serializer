@@ -1,5 +1,6 @@
 import React, { type JSX, type PropsWithChildren } from "react";
 import { jest } from "@jest/globals";
+import set from "set-value";
 import stringify from "json-stringify-safe";
 import type { ShallowWrapper } from "./types";
 import { getChildren } from "./utils/getChildren";
@@ -29,8 +30,10 @@ export const shallowWrapper = (
     };
 
     componentNames.forEach((componentName) => {
-      wrapper[componentName] = jest.fn(
-        ({ children, ...props }: PropsWithChildren) => {
+      set(
+        wrapper,
+        componentName,
+        jest.fn(({ children, ...props }: PropsWithChildren) => {
           const Component = actual[
             componentName
           ] as ({}: PropsWithChildren) => JSX.Element;
@@ -56,7 +59,7 @@ export const shallowWrapper = (
           }
 
           return <Component {...props}>{children}</Component>;
-        }
+        })
       );
     });
 
