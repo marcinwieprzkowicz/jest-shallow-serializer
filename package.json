@@ -27,6 +27,10 @@
   "author": "Marcin Wieprzkowicz",
   "type": "commonjs",
   "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./serializer": "./dist/serializer.js"
+  },
   "files": [
     "dist"
   ],

@@ -108,3 +108,55 @@ describe("Component", () => {
   });
 });
 ```
+
+### Nested exports / Context
+
+You can also use dot notation in component names to shallow mock nested components. For example, if you want to mock context provider, simply use `Context.Provider` as the component name.
+
+```
+src
+├── context.ts
+├── Component.tsx
+├── Component.spec.tsx
+```
+
+**context.ts**
+
+```typescript
+export const Context = createContext<string | undefined>(undefined);
+```
+
+**Component.tsx**
+
+```typescript
+import { Context } from "./context";
+
+export const Component = ({ children }: TestComponentContextProps) => {
+  return <Context.Provider value="lorem ipsum">{children}</Context.Provider>;
+};
+```
+
+**Component.spec.tsx**
+
+```typescript
+import { Component } from "./Component";
+import { Context } from "./context";
+
+jest.mock("./context", shallowWrapper("./context", "Context.Provider"));
+
+const shallowedProvider = shallowed(Context);
+
+describe("Component", () => {
+  afterEach(() => {
+    shallowedProvider.unmock("Context.Provider");
+  });
+
+  it("matches snapshot", () => {
+    shallowedProvider.mock("Context.Provider");
+
+    const { asFragment } = render(<Component />);
+
+    expect(asFragment()).toMatchSnapshot();
+  });
+});
+```
