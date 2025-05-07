@@ -3,12 +3,12 @@ import { render } from "@testing-library/react";
 import { shallowWrapper } from "../shallowWrapper";
 import type { TestComponentProps } from "./__fixtures__/TestComponent";
 import type { TestComponentSuspenseProps } from "./__fixtures__/TestComponentSuspense";
+import type { TestComponentContextProps } from "./__fixtures__/TestComponentContext";
 
-type Component = ({ children }: TestComponentProps) => JSX.Element;
+type Component = (props: TestComponentProps) => JSX.Element;
 type ComponentTd = () => JSX.Element;
-type ComponentSuspense = ({
-  children,
-}: TestComponentSuspenseProps) => JSX.Element;
+type ComponentSuspense = (props: TestComponentSuspenseProps) => JSX.Element;
+type ComponentContext = (props: TestComponentContextProps) => JSX.Element;
 
 let objectWithCircularReference = {};
 Object.assign(objectWithCircularReference, {
@@ -109,6 +109,23 @@ describe("shallowWrapper", () => {
 
       expect(asFragment()).toMatchSnapshot();
       wrapper.unmock("TestComponent");
+    });
+
+    it("supports nested component paths", () => {
+      const wrapper = shallowWrapper(
+        "./__tests__/__fixtures__/TestComponentContext",
+        "TestContext.Provider"
+      )();
+      wrapper.mock("TestContext.Provider");
+
+      const TestComponentContext =
+        wrapper.TestComponentContext as ComponentContext;
+      const { asFragment } = render(
+        <TestComponentContext>lorem ipsum</TestComponentContext>
+      );
+
+      expect(asFragment()).toMatchSnapshot();
+      wrapper.unmock("TestContext.Provider");
     });
 
     describe("lazy components", () => {

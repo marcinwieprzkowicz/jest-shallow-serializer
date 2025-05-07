@@ -62,6 +62,17 @@ exports[`shallowWrapper \`mock\` function supports functions 1`] = `
 </DocumentFragment>
 `;
 
+exports[`shallowWrapper \`mock\` function supports nested component paths 1`] = `
+<DocumentFragment>
+  <div
+    data-shallow-name="TestContext.Provider"
+    data-shallow-props="{"value":"lorem ipsum"}"
+  >
+    lorem ipsum
+  </div>
+</DocumentFragment>
+`;
+
 exports[`shallowWrapper \`mock\` function uses \`options.renderAs\` as render tag 1`] = `
 <DocumentFragment>
   <span
