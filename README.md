@@ -109,7 +109,7 @@ describe("Component", () => {
 });
 ```
 
-### Nested exports / Context
+## Nested exports / Context
 
 You can also use dot notation in component names to shallow mock nested components. For example, if you want to mock context provider, simply use `Context.Provider` as the component name.
 
