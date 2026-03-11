@@ -2,6 +2,13 @@
 
 A flexible jest serializer for shallow rendering React components. Unlike full shallow renderers, this tool focuses on serializing only the components you pick, making snapshots cleaner and more focused. Perfect for targeted testing with minimal noise! 🚀
 
+## Features
+
+- **Selective shallow rendering** - Choose which components to shallow render
+- **Babel macro support** - Compile-time transformation for cleaner test files
+- **Nested component support** - Mock context providers and nested exports
+- **No external dependencies** - Works with Jest's built-in mocking
+
 ## Motivation
 
 I created this package because existing solutions for shallow rendering are no longer maintained, and the testing ecosystem seems to be shifting toward other approaches. However, I still believe shallow rendering is a valuable technique for isolating and testing components effectively, and this serializer aims to fill that gap.
@@ -108,6 +115,53 @@ describe("Component", () => {
   });
 });
 ```
+
+### 3. Babel Macro (Recommended)
+
+The Babel macro provides a cleaner syntax by transforming your code at compile time.
+
+#### Installation
+
+1. Install `babel-plugin-macros`:
+
+```bash
+npm install babel-plugin-macros --save-dev
+```
+
+2. Add `macros` plugin to your Babel config:
+
+**babel.config.js**
+
+```javascript
+module.exports = {
+  plugins: ["macros"],
+};
+```
+
+#### Usage
+
+Instead of writing:
+
+```typescript
+import { shallowWrapper } from "jest-shallow-serializer";
+
+jest.mock(
+  "@/components/component-name",
+  shallowWrapper("@/components/component-name", "ComponentName")
+);
+```
+
+You can simply write:
+
+```typescript
+import { shallowMock } from "jest-shallow-serializer/macro";
+
+shallowMock("@/components/component-name", "ComponentName");
+```
+
+The macro transforms this at compile time into the equivalent `jest.mock` call shown above.
+
+**Note:** The first argument must be a string literal (the module path).
 
 ## Nested exports / Context
 
