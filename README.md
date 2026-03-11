@@ -2,6 +2,13 @@
 
 A flexible jest serializer for shallow rendering React components. Unlike full shallow renderers, this tool focuses on serializing only the components you pick, making snapshots cleaner and more focused. Perfect for targeted testing with minimal noise! 🚀
 
+## Features
+
+- **Selective shallow rendering** - Choose which components to shallow render
+- **Babel macro support** - Compile-time transformation for cleaner test files
+- **Nested component support** - Mock context providers and nested exports
+- **No external dependencies** - Works with Jest's built-in mocking
+
 ## Motivation
 
 I created this package because existing solutions for shallow rendering are no longer maintained, and the testing ecosystem seems to be shifting toward other approaches. However, I still believe shallow rendering is a valuable technique for isolating and testing components effectively, and this serializer aims to fill that gap.
@@ -56,9 +63,50 @@ Object.assign(global, {
 
 ## Usage
 
-Unlike `enzyme#shallow` or `react-test-renderer/shallow`, this library performs selective shallow rendering. Developers choose specific components to shallow render by mocking them. There are two ways to mock a component:
+Unlike `enzyme#shallow` or `react-test-renderer/shallow`, this library performs selective shallow rendering. Developers choose specific components to shallow render by mocking them.
 
-### 1. `shallowWrapper`, `shallowed` and `jest.mock`
+### 1. Babel Macro (Recommended)
+
+The Babel macro provides a cleaner syntax by transforming your code at compile time.
+
+#### Installation
+
+1. Install `babel-plugin-macros`:
+
+```bash
+npm install babel-plugin-macros --save-dev
+```
+
+2. Add `macros` plugin to your Babel config:
+
+**babel.config.js**
+
+```javascript
+module.exports = {
+  plugins: ["macros"],
+};
+```
+
+#### Usage
+
+```typescript
+import { shallowMock } from "jest-shallow-serializer/macro";
+
+shallowMock("@/components/component-name", "ComponentName");
+```
+
+The macro transforms this at compile time into:
+
+```typescript
+jest.mock(
+  "@/components/component-name",
+  shallowWrapper("@/components/component-name", "ComponentName")
+);
+```
+
+**Note:** The first argument must be a string literal (the module path).
+
+### 2. `shallowWrapper` + `shallowed` + `jest.mock`
 
 ```typescript
 import * as componentModule from "@/app/module/Component";
@@ -72,7 +120,7 @@ jest.mock(
 const shallowedComponentModule = shallowed(componentModule);
 ```
 
-### 2. `doShallow` + `require`
+### 3. `doShallow` + `require`
 
 `doShallow` use `jest.doMock`, which is not hoisted, that's why we need to `require` shallowed module afterwards.
 
@@ -108,6 +156,20 @@ describe("Component", () => {
   });
 });
 ```
+
+## Next.js
+
+If you're using Next.js, add the `macros` plugin to your Babel config:
+
+```javascript
+// babel.config.js
+module.exports = {
+  presets: ["next/babel"],
+  plugins: ["macros"],
+};
+```
+
+This works with both the App Router and Pages Router.
 
 ## Nested exports / Context
 
