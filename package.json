@@ -42,6 +42,10 @@
     "./macro": {
       "types": "./dist/macro.d.ts",
       "default": "./dist/macro.js"
+    },
+    "./swc": {
+      "types": "./dist/swc.d.ts",
+      "default": "./dist/swc.js"
     }
   },
   "files": [

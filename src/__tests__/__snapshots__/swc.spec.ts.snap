@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`swc transform allows using ShallowMockVisitor directly 1`] = `
+"jest.mock("@/components/TestComponent", shallowWrapper("@/components/TestComponent", "TestComponent"));
+"
+`;
+
+exports[`swc transform does not transform calls without shallowMock import 1`] = `
+"function shallowMock() {}
+shallowMock("@/components/TestComponent", "TestComponent");
+"
+`;
+
+exports[`swc transform handles TSX files 1`] = `
+"jest.mock("@/components/TestComponent", shallowWrapper("@/components/TestComponent", "TestComponent"));
+const App = ()=><div>Hello</div>;
+"
+`;
+
+exports[`swc transform preserves other imports 1`] = `
+"import { render } from "@testing-library/react";
+jest.mock("@/components/TestComponent", shallowWrapper("@/components/TestComponent", "TestComponent"));
+"
+`;
+
+exports[`swc transform transforms named import shallowMock 1`] = `
+"jest.mock("@/components/TestComponent", shallowWrapper("@/components/TestComponent", "TestComponent"));
+"
+`;
+
+exports[`swc transform transforms shallowMock to jest.mock 1`] = `
+"jest.mock("@/components/TestComponent", shallowWrapper("@/components/TestComponent", "TestComponent"));
+"
+`;
+
+exports[`swc transform transforms shallowMock with multiple component names 1`] = `
+"jest.mock("@/components/index", shallowWrapper("@/components/index", "Button", "Input", "Select"));
+"
+`;

@@ -1,0 +1,18 @@
+[package]
+name = "swc-plugin-jest-shallow-serializer"
+version = "0.1.0"
+edition = "2021"
+description = "SWC plugin for jest-shallow-serializer"
+license = "ISC"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+serde = "1"
+swc_core = { version = ">=0.104.0", features = [
+    "ecma_plugin_transform",
+] }
+
+[profile.release]
+lto = true
