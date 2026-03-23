@@ -31,9 +31,18 @@
   "type": "commonjs",
   "main": "./dist/index.js",
   "exports": {
-    ".": "./dist/index.js",
-    "./serializer": "./dist/serializer.js",
-    "./macro": "./dist/macro.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./serializer": {
+      "types": "./dist/serializer.d.ts",
+      "default": "./dist/serializer.js"
+    },
+    "./macro": {
+      "types": "./dist/macro.d.ts",
+      "default": "./dist/macro.js"
+    }
   },
   "files": [
     "dist"
