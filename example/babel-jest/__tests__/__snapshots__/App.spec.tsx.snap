@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`App renders with shallow Title 1`] = `
+<DocumentFragment>
+  <div
+    class="app"
+  >
+    <Title
+      level={2}
+    >
+      Hello World
+    </Title>
+    <p>
+      App content
+    </p>
+  </div>
+</DocumentFragment>
+`;

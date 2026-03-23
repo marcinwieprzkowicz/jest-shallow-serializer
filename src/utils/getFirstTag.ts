@@ -38,11 +38,14 @@ export const getFirstTag = (filePath: string) => {
 
         if (isComponent(firstTag)) {
           const source = fileImports[firstTag];
-          const componentPath = require.resolve(source, {
-            paths: isRelative(source) ? [dir] : undefined,
-          });
 
-          firstTag = getFirstTag(componentPath);
+          if (source) {
+            const componentPath = require.resolve(source, {
+              paths: isRelative(source) ? [dir] : undefined,
+            });
+
+            firstTag = getFirstTag(componentPath);
+          }
         }
 
         path.stop();
