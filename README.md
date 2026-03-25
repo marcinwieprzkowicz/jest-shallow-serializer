@@ -87,10 +87,21 @@ module.exports = {
 };
 ```
 
+3. You have to use `babel-jest`. Support for macros in `@swc/jest` and `esbuild-jest` is planned.
+
+```javascript
+// jest.config.js
+module.exports = {
+  transform: {
+    "^.+\\.(t|j)sx?$": "babel-jest",
+  },
+};
+```
+
 #### Usage
 
 ```typescript
-import { shallowMock } from "jest-shallow-serializer/macro";
+import shallowMock from "jest-shallow-serializer/macro";
 
 shallowMock("@/components/component-name", "ComponentName");
 ```
@@ -100,7 +111,7 @@ The macro transforms this at compile time into:
 ```typescript
 jest.mock(
   "@/components/component-name",
-  shallowWrapper("@/components/component-name", "ComponentName")
+  shallowWrapper("@/components/component-name", "ComponentName"),
 );
 ```
 
@@ -114,7 +125,7 @@ import { App } from "@/app/module/App";
 
 jest.mock(
   "@/app/module/Component",
-  shallowWrapper("@/app/module/Component", "ComponentName")
+  shallowWrapper("@/app/module/Component", "ComponentName"),
 );
 
 const shallowedComponentModule = shallowed(componentModule);
@@ -129,7 +140,7 @@ import { App } from "@/app/module/App";
 
 const shallowedComponentModule = doShallow(
   "@/app/module/Component",
-  "ComponentName"
+  "ComponentName",
 );
 
 const { ComponentName } = require("@/app/module/Component");
