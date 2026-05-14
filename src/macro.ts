@@ -19,21 +19,37 @@ function shallowMockMacro({ references, babel }: MacroParams) {
       throw new Error("shallowMock requires a module path");
     }
 
-    const modulePath = args[0];
+    const rawModulePath = args[0];
     const componentNames = args.slice(1);
+
+    const requireCall = types.callExpression(types.identifier("require"), [
+      types.stringLiteral("jest-shallow-serializer"),
+    ]);
+
+    const shallowWrapperMember = types.memberExpression(
+      requireCall,
+      types.identifier("shallowWrapper"),
+    );
+
+    const shallowWrapperCall = types.callExpression(shallowWrapperMember, [
+      rawModulePath,
+      ...componentNames,
+    ]);
+
+    // TODO: shallowWrapper should be split to return an inline factory function directly,
+    // avoiding the need for this wrapper. Jest requires an arrow function AST node
+    // as the second argument to jest.mock for safe hoisting.
+    const factoryFn = types.arrowFunctionExpression(
+      [],
+      types.callExpression(shallowWrapperCall, []),
+    );
 
     const jestMockCall = types.callExpression(
       types.memberExpression(
         types.identifier("jest"),
         types.identifier("mock"),
       ),
-      [
-        modulePath,
-        types.callExpression(types.identifier("shallowWrapper"), [
-          modulePath,
-          ...componentNames,
-        ]),
-      ],
+      [rawModulePath, factoryFn],
     );
 
     callPath.replaceWith(jestMockCall);

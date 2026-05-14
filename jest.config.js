@@ -19,7 +19,12 @@ module.exports = {
   ],
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   testEnvironment: "jest-environment-jsdom",
-  testPathIgnorePatterns: ["/node_modules/", "/dist/", "TestComponent*"],
+  testPathIgnorePatterns: [
+    "/node_modules/",
+    "/dist/",
+    "/example/",
+    "TestComponent*",
+  ],
   transform: {
     "^.+\\.(t|j)sx?$": "@swc/jest",
   },
