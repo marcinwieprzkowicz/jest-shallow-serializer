@@ -42,6 +42,10 @@
     "./macro": {
       "types": "./dist/macro.d.ts",
       "default": "./dist/macro.js"
+    },
+    "./queries": {
+      "types": "./dist/queries/index.d.ts",
+      "default": "./dist/queries/index.js"
     }
   },
   "files": [
