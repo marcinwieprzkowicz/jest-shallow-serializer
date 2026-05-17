@@ -1,3 +1,5 @@
+import { waitFor } from "@testing-library/dom";
+import type { waitForOptions } from "@testing-library/dom/types/wait-for";
 import type { ShallowQueryOptions, ShallowQueryResult, TextMatch } from "./types";
 
 type QueryAll = (
@@ -66,10 +68,61 @@ export const buildShallowQueries = (queryAll: QueryAll) => {
     return queryAll(container, name, options);
   };
 
+  const findByShallowName = async (
+    container: HTMLElement | Document,
+    name: TextMatch,
+    options?: ShallowQueryOptions,
+    waitForOpts?: waitForOptions
+  ): Promise<ShallowQueryResult> => {
+    return waitFor(
+      () => {
+        const results = queryAll(container, name, options);
+        if (results.length > 1) {
+          throw getElementError(
+            `Found multiple elements with shallow name: ${String(name)}`,
+            container
+          );
+        }
+        if (results.length === 0) {
+          throw getElementError(
+            `Unable to find an element with shallow name: ${String(name)}`,
+            container
+          );
+        }
+        return results[0];
+      },
+      waitForOpts
+    );
+  };
+
+  const findAllByShallowName = async (
+    container: HTMLElement | Document,
+    name: TextMatch,
+    options?: ShallowQueryOptions,
+    waitForOpts?: waitForOptions
+  ): Promise<ShallowQueryResult[]> => {
+    let results: ShallowQueryResult[] = [];
+    await waitFor(
+      () => {
+        results = queryAll(container, name, options);
+        if (results.length === 0) {
+          throw getElementError(
+            `Unable to find an element with shallow name: ${String(name)}`,
+            container
+          );
+        }
+      },
+      waitForOpts
+    );
+    return results;
+  };
+
   return {
     getAllByShallowName,
     getByShallowName,
     queryByShallowName,
     queryAllByShallowName,
+    findByShallowName,
+    findAllByShallowName,
   };
 };

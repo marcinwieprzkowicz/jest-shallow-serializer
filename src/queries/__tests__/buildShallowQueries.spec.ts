@@ -111,4 +111,52 @@ describe("buildShallowQueries", () => {
       expect(results).toEqual([]);
     });
   });
+
+  describe("findByShallowName", () => {
+    it("returns element when already present", async () => {
+      const container = document.createElement("div");
+      container.appendChild(createMockElement("Button"));
+
+      const result = await queries.findByShallowName(container, "Button");
+
+      expect(result.name).toBe("Button");
+    });
+
+    it("throws after timeout when element not found", async () => {
+      const container = document.createElement("div");
+
+      await expect(
+        queries.findByShallowName(container, "Button", {}, { timeout: 50 })
+      ).rejects.toThrow(/unable to find an element with shallow name/i);
+    });
+
+    it("throws when multiple elements found", async () => {
+      const container = document.createElement("div");
+      container.appendChild(createMockElement("Button"));
+      container.appendChild(createMockElement("Button"));
+
+      await expect(
+        queries.findByShallowName(container, "Button")
+      ).rejects.toThrow(/found multiple elements with shallow name/i);
+    });
+  });
+
+  describe("findAllByShallowName", () => {
+    it("returns array when elements already present", async () => {
+      const container = document.createElement("div");
+      container.appendChild(createMockElement("Button"));
+
+      const results = await queries.findAllByShallowName(container, "Button");
+
+      expect(results).toHaveLength(1);
+    });
+
+    it("throws after timeout when no elements found", async () => {
+      const container = document.createElement("div");
+
+      await expect(
+        queries.findAllByShallowName(container, "Button", {}, { timeout: 50 })
+      ).rejects.toThrow(/unable to find an element with shallow name/i);
+    });
+  });
 });
