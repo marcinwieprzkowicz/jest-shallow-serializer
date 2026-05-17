@@ -10,5 +10,7 @@ export {
   queryAllByShallowName,
   findByShallowName,
   findAllByShallowName,
+  screen,
+  shallowQueries,
 } from "./queries";
 export type { ShallowQueryResult, ShallowQueryOptions, TextMatch } from "./queries";

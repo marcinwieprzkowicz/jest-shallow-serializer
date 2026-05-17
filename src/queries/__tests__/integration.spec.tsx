@@ -2,7 +2,7 @@ import React from "react";
 import { render } from "@testing-library/react";
 import { within } from "@testing-library/dom";
 import { shallowWrapper } from "../../shallowWrapper";
-import { getByShallowName, queryAllByShallowName, shallowQueries } from "../index";
+import { getByShallowName, queryAllByShallowName, shallowQueries, screen } from "../index";
 
 describe("shallow queries integration", () => {
   it("works with global getByShallowName", () => {
@@ -80,6 +80,30 @@ describe("shallow queries integration", () => {
 
     expect(results).toHaveLength(1);
     expect(results[0].props.prop).toBe("first");
+
+    wrapper.unmock("TestComponent");
+  });
+
+  it("works with screen pre-bound queries", () => {
+    const wrapper = shallowWrapper(
+      "./__tests__/__fixtures__/TestComponent.tsx",
+      "TestComponent"
+    )();
+    wrapper.mock("TestComponent");
+
+    const TestComponent = wrapper.TestComponent as React.ComponentType<{
+      prop?: string;
+      children?: React.ReactNode;
+    }>;
+
+    render(
+      <TestComponent prop="lorem ipsum">children</TestComponent>
+    );
+
+    const result = screen.getByShallowName("TestComponent");
+
+    expect(result.name).toBe("TestComponent");
+    expect(result.props.prop).toBe("lorem ipsum");
 
     wrapper.unmock("TestComponent");
   });

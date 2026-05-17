@@ -116,4 +116,47 @@ describe("queryAllByShallowName", () => {
 
     expect(results).toEqual([]);
   });
+
+  it("matches function props as [Function] string", () => {
+    const container = document.createElement("div");
+    container.appendChild(
+      createMockElement("Button", { onClick: "some handler" })
+    );
+
+    const results = queryAllByShallowName(container, "Button", {
+      props: { onClick: "[Function]" },
+    });
+
+    expect(results).toHaveLength(0);
+  });
+
+  it("matches nested props using dot notation", () => {
+    const container = document.createElement("div");
+    container.appendChild(
+      createMockElement("Button", { style: { color: "red", size: "lg" } })
+    );
+    container.appendChild(
+      createMockElement("Button", { style: { color: "blue", size: "sm" } })
+    );
+
+    const results = queryAllByShallowName(container, "Button", {
+      props: { "style.color": "red" },
+    });
+
+    expect(results).toHaveLength(1);
+    expect(results[0].props.style).toEqual({ color: "red", size: "lg" });
+  });
+
+  it("returns undefined for missing nested props", () => {
+    const container = document.createElement("div");
+    container.appendChild(
+      createMockElement("Button", { variant: "primary" })
+    );
+
+    const results = queryAllByShallowName(container, "Button", {
+      props: { "style.color": "red" },
+    });
+
+    expect(results).toEqual([]);
+  });
 });
