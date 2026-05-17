@@ -14,3 +14,5 @@ export const {
   findByShallowName,
   findAllByShallowName,
 } = queries;
+
+export { queries as shallowQueries };
