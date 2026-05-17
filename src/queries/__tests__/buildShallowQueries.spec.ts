@@ -1,0 +1,114 @@
+import { buildShallowQueries } from "../buildShallowQueries";
+import { queryAllByShallowName } from "../queryShallow";
+
+const createMockElement = (name: string, props: Record<string, unknown> = {}) => {
+  const el = document.createElement("div");
+  el.setAttribute("data-shallow-name", name);
+  el.setAttribute("data-shallow-props", JSON.stringify(props));
+  return el;
+};
+
+describe("buildShallowQueries", () => {
+  let queries: ReturnType<typeof buildShallowQueries>;
+
+  beforeEach(() => {
+    queries = buildShallowQueries(queryAllByShallowName);
+  });
+
+  describe("getAllByShallowName", () => {
+    it("returns array when elements found", () => {
+      const container = document.createElement("div");
+      container.appendChild(createMockElement("Button"));
+      container.appendChild(createMockElement("Button"));
+
+      const results = queries.getAllByShallowName(container, "Button");
+
+      expect(results).toHaveLength(2);
+    });
+
+    it("throws when no elements found", () => {
+      const container = document.createElement("div");
+
+      expect(() =>
+        queries.getAllByShallowName(container, "Button")
+      ).toThrow(/unable to find an element with shallow name/i);
+    });
+  });
+
+  describe("getByShallowName", () => {
+    it("returns single element when one found", () => {
+      const container = document.createElement("div");
+      container.appendChild(createMockElement("Button"));
+
+      const result = queries.getByShallowName(container, "Button");
+
+      expect(result.name).toBe("Button");
+    });
+
+    it("throws when no elements found", () => {
+      const container = document.createElement("div");
+
+      expect(() =>
+        queries.getByShallowName(container, "Button")
+      ).toThrow(/unable to find an element with shallow name/i);
+    });
+
+    it("throws when multiple elements found", () => {
+      const container = document.createElement("div");
+      container.appendChild(createMockElement("Button"));
+      container.appendChild(createMockElement("Button"));
+
+      expect(() =>
+        queries.getByShallowName(container, "Button")
+      ).toThrow(/found multiple elements with shallow name/i);
+    });
+  });
+
+  describe("queryByShallowName", () => {
+    it("returns single element when one found", () => {
+      const container = document.createElement("div");
+      container.appendChild(createMockElement("Button"));
+
+      const result = queries.queryByShallowName(container, "Button");
+
+      expect(result?.name).toBe("Button");
+    });
+
+    it("returns null when no elements found", () => {
+      const container = document.createElement("div");
+
+      const result = queries.queryByShallowName(container, "Button");
+
+      expect(result).toBeNull();
+    });
+
+    it("throws when multiple elements found", () => {
+      const container = document.createElement("div");
+      container.appendChild(createMockElement("Button"));
+      container.appendChild(createMockElement("Button"));
+
+      expect(() =>
+        queries.queryByShallowName(container, "Button")
+      ).toThrow(/found multiple elements with shallow name/i);
+    });
+  });
+
+  describe("queryAllByShallowName", () => {
+    it("returns array when elements found", () => {
+      const container = document.createElement("div");
+      container.appendChild(createMockElement("Button"));
+
+      const results = queries.queryAllByShallowName(container, "Button");
+
+      expect(results).toHaveLength(1);
+    });
+
+    it("returns empty array when no elements found", () => {
+      const container = document.createElement("div");
+
+      const results = queries.queryAllByShallowName(container, "Button");
+
+      expect(results).toEqual([]);
+    });
+  });
+});
