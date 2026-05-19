@@ -159,4 +159,51 @@ describe("queryAllByShallowName", () => {
 
     expect(results).toEqual([]);
   });
+
+  it("handles invalid JSON in data-shallow-props by returning empty props", () => {
+    const container = document.createElement("div");
+    const el = document.createElement("div");
+    el.setAttribute("data-shallow-name", "BrokenComponent");
+    el.setAttribute("data-shallow-props", "NOT VALID JSON {{{}");
+    container.appendChild(el);
+
+    const results = queryAllByShallowName(container, "BrokenComponent");
+
+    expect(results).toHaveLength(1);
+    expect(results[0].props).toEqual({});
+  });
+
+  it("passes element to predicate function matcher (2-arg signature)", () => {
+    const container = document.createElement("div");
+    const el = createMockElement("ButtonWithData", { "data-extra": "test" });
+    container.appendChild(el);
+
+    let lastElement: Element | undefined;
+    const predicate = (text: string, element?: Element) => {
+      lastElement = element;
+      return text.startsWith("Butt");
+    };
+
+    const results = queryAllByShallowName(container, predicate);
+
+    expect(lastElement).toBe(el);
+    expect(results).toHaveLength(1);
+    expect(results[0].name).toBe("ButtonWithData");
+  });
+
+  it("handles deeply nested dot paths (more than 3 segments)", () => {
+    const container = document.createElement("div");
+    container.appendChild(
+      createMockElement("DeepComponent", {
+        level1: { level2: { level3: { target: "found" } } },
+      })
+    );
+
+    const results = queryAllByShallowName(container, "DeepComponent", {
+      props: { "level1.level2.level3.target": "found" },
+    });
+
+    expect(results).toHaveLength(1);
+    expect(results[0].props.level1.level2.level3.target).toBe("found");
+  });
 });

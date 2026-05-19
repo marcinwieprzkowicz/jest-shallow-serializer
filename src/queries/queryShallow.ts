@@ -11,13 +11,6 @@ const parseShallowProps = (element: Element): Record<string, unknown> => {
   }
 };
 
-const normalizeFunctionValue = (value: unknown): unknown => {
-  if (typeof value === "function") {
-    return "_isMockFunction" in value ? "[MockFunction]" : "[Function]";
-  }
-  return value;
-};
-
 const getNestedValue = (
   obj: Record<string, unknown>,
   key: string
@@ -49,9 +42,7 @@ const matchesProps = (
 ): boolean => {
   return Object.entries(filterProps).every(([key, filterValue]) => {
     const elementValue = getNestedValue(elementProps, key);
-    const normalizedElement = normalizeFunctionValue(elementValue);
-    const normalizedFilter = normalizeFunctionValue(filterValue);
-    return normalizedElement === normalizedFilter;
+    return elementValue === filterValue;
   });
 };
 

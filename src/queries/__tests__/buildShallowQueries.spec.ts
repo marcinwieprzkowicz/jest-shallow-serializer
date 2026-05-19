@@ -82,14 +82,14 @@ describe("buildShallowQueries", () => {
       expect(result).toBeNull();
     });
 
-    it("throws when multiple elements found", () => {
+    it("returns first element when multiple found (does not throw)", () => {
       const container = document.createElement("div");
       container.appendChild(createMockElement("Button"));
       container.appendChild(createMockElement("Button"));
 
-      expect(() =>
-        queries.queryByShallowName(container, "Button")
-      ).toThrow(/found multiple elements with shallow name/i);
+      const result = queries.queryByShallowName(container, "Button");
+
+      expect(result?.name).toBe("Button");
     });
   });
 
@@ -151,12 +151,40 @@ describe("buildShallowQueries", () => {
       expect(results).toHaveLength(1);
     });
 
+    it("returns all matching elements when multiple found (final results)", async () => {
+      const container = document.createElement("div");
+      container.appendChild(createMockElement("Button"));
+      container.appendChild(createMockElement("Button"));
+      container.appendChild(createMockElement("Input"));
+
+      const results = await queries.findAllByShallowName(container, "Button");
+
+      expect(results).toHaveLength(2);
+    });
+
     it("throws after timeout when no elements found", async () => {
       const container = document.createElement("div");
 
       await expect(
         queries.findAllByShallowName(container, "Button", {}, { timeout: 50 })
       ).rejects.toThrow(/unable to find an element with shallow name/i);
+    });
+  });
+
+  describe("findByShallowName with waitFor options", () => {
+    it("respects interval option for dynamic content", async () => {
+      const container = document.createElement("div");
+      const promise = new Promise<void>((resolve) => {
+        setTimeout(() => {
+          container.appendChild(createMockElement("AsyncButton", {}));
+          resolve();
+        }, 30);
+      });
+
+      const result = await queries.findByShallowName(container, "AsyncButton", {}, { interval: 5 });
+
+      expect(result.name).toBe("AsyncButton");
+      await promise;
     });
   });
 });

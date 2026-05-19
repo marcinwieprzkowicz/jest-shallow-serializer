@@ -51,12 +51,6 @@ export const buildShallowQueries = (queryAll: QueryAll) => {
     options?: ShallowQueryOptions
   ): ShallowQueryResult | null => {
     const results = queryAll(container, name, options);
-    if (results.length > 1) {
-      throw getElementError(
-        `Found multiple elements with shallow name: ${String(name)}`,
-        container
-      );
-    }
     return results[0] ?? null;
   };
 

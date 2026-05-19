@@ -107,4 +107,61 @@ describe("shallow queries integration", () => {
 
     wrapper.unmock("TestComponent");
   });
+
+  it("within queries custom render container correctly (not always body)", () => {
+    const wrapper = shallowWrapper(
+      "./__tests__/__fixtures__/TestComponent.tsx",
+      "CustomContainerComponent"
+    )();
+    wrapper.mock("CustomContainerComponent");
+
+    const CustomContainerComponent = wrapper.CustomContainerComponent as React.ComponentType<{ prop?: string }>;
+
+    const { container: otherContainer } = render(
+      React.createElement("div", null, "other component")
+    );
+
+    const { container: currentContainer } = render(
+      <CustomContainerComponent prop="from-current" />
+    );
+
+    const scoped = within(currentContainer, shallowQueries);
+    const result = scoped.getByShallowName("CustomContainerComponent");
+
+    expect(result.props.prop).toBe("from-current");
+
+    expect(() =>
+      within(otherContainer, shallowQueries).getByShallowName("CustomContainerComponent")
+    ).toThrow(/unable to find/i);
+
+    wrapper.unmock("CustomContainerComponent");
+  });
+
+  it("global getByShallowName queries correct container", () => {
+    const wrapper = shallowWrapper(
+      "./__tests__/__fixtures__/TestComponent.tsx",
+      "GlobalContainerComponent"
+    )();
+    wrapper.mock("GlobalContainerComponent");
+
+    const GlobalContainerComponent = wrapper.GlobalContainerComponent as React.ComponentType<{ prop?: string }>;
+
+    const { container: otherContainer } = render(
+      React.createElement("div", null, "other stuff")
+    );
+
+    const { container: currentContainer } = render(
+      <GlobalContainerComponent prop="target" />
+    );
+
+    const result = getByShallowName(currentContainer, "GlobalContainerComponent");
+
+    expect(result.props.prop).toBe("target");
+
+    expect(() =>
+      getByShallowName(otherContainer, "GlobalContainerComponent")
+    ).toThrow(/unable to find/i);
+
+    wrapper.unmock("GlobalContainerComponent");
+  });
 });
