@@ -1,6 +1,6 @@
 {
   "name": "jest-shallow-serializer",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "engines": {
     "node": ">= 20.18.1"
   },
@@ -26,7 +26,6 @@
     "type": "git",
     "url": "git+https://github.com/marcinwieprzkowicz/jest-shallow-serializer.git"
   },
-  "license": "ISC",
   "author": "Marcin Wieprzkowicz",
   "type": "commonjs",
   "main": "./dist/index.js",
