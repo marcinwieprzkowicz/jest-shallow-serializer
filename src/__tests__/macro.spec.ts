@@ -23,6 +23,32 @@ shallowMock("@/components/TestComponent", "TestComponent");
     expect(result?.code).toMatchSnapshot();
   });
 
+  it("resolves relative paths to absolute for shallowWrapper", () => {
+    const code = `
+import shallowMock from "${macroPath.replace(/\\/g, "/")}";
+
+shallowMock("../components/Title", "Title");
+`;
+
+    const filename = path.resolve(__dirname, "example-__tests__/App.spec.tsx");
+    const result = babel.transformSync(code, {
+      filename,
+      plugins: [
+        ["macros", { shallowMock: shallowMockMacro }],
+        "@babel/plugin-transform-typescript",
+      ],
+    });
+
+    const expectedAbsolute = path
+      .resolve(path.dirname(filename), "../components/Title")
+      .replace(/\\/g, "/");
+
+    // jest.mock key stays relative (resolved by Jest relative to test file)
+    expect(result?.code).toContain('jest.mock("../components/Title"');
+    // shallowWrapper arg is absolute (resolved relative to dist file at runtime)
+    expect(result?.code).toContain(`"${expectedAbsolute}"`);
+  });
+
   it("throws error when shallowMock is not called as function", () => {
     const code = `
 import shallowMock from "${macroPath.replace(/\\/g, "/")}";

@@ -1,9 +1,41 @@
+import path from "node:path";
 import { createMacro, MacroParams } from "babel-plugin-macros";
+import { isRelative as isPathRelative } from "./utils/isRelative";
+import {
+  arrowFunctionExpression,
+  callExpression,
+  identifier,
+  isStringLiteral,
+  memberExpression,
+  stringLiteral,
+  type ArgumentPlaceholder,
+  type Expression,
+  type SpreadElement,
+} from "@babel/types";
 
-export default createMacro(shallowMockMacro);
+/**
+ * Resolves test file relative paths to absolute so `shallowWrapper`
+ * (running from `dist/`) can load them. Leaves anything else untouched.
+ */
+function resolveModulePath(
+  modulePath: ArgumentPlaceholder | SpreadElement | Expression,
+  filename: string | null | undefined,
+) {
+  if (
+    isStringLiteral(modulePath) &&
+    isPathRelative(modulePath.value) &&
+    filename
+  ) {
+    return stringLiteral(
+      path.resolve(path.dirname(filename), modulePath.value),
+    );
+  }
 
-function shallowMockMacro({ references, babel }: MacroParams) {
-  const { types } = babel;
+  return modulePath;
+}
+
+function shallowMockMacro({ references, state }: MacroParams) {
+  const { filename } = state.file.opts;
   const refs = references.default || references.shallowMock;
 
   refs.forEach((refPath) => {
@@ -22,36 +54,36 @@ function shallowMockMacro({ references, babel }: MacroParams) {
     const rawModulePath = args[0];
     const componentNames = args.slice(1);
 
-    const requireCall = types.callExpression(types.identifier("require"), [
-      types.stringLiteral("jest-shallow-serializer"),
+    const requireCall = callExpression(identifier("require"), [
+      stringLiteral("jest-shallow-serializer"),
     ]);
 
-    const shallowWrapperMember = types.memberExpression(
+    const shallowWrapperMember = memberExpression(
       requireCall,
-      types.identifier("shallowWrapper"),
+      identifier("shallowWrapper"),
     );
 
-    const shallowWrapperCall = types.callExpression(shallowWrapperMember, [
-      rawModulePath,
+    const shallowWrapperCall = callExpression(shallowWrapperMember, [
+      resolveModulePath(rawModulePath, filename),
       ...componentNames,
     ]);
 
     // TODO: shallowWrapper should be split to return an inline factory function directly,
     // avoiding the need for this wrapper. Jest requires an arrow function AST node
     // as the second argument to jest.mock for safe hoisting.
-    const factoryFn = types.arrowFunctionExpression(
+    const factoryFn = arrowFunctionExpression(
       [],
-      types.callExpression(shallowWrapperCall, []),
+      callExpression(shallowWrapperCall, []),
     );
 
-    const jestMockCall = types.callExpression(
-      types.memberExpression(
-        types.identifier("jest"),
-        types.identifier("mock"),
-      ),
+    // we use rawModulePath in `jest.mock`. Jest can resolve that one from the test file.
+    const jestMockCall = callExpression(
+      memberExpression(identifier("jest"), identifier("mock")),
       [rawModulePath, factoryFn],
     );
 
     callPath.replaceWith(jestMockCall);
   });
 }
+
+export default createMacro(shallowMockMacro);
