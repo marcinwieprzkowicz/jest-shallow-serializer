@@ -2,7 +2,7 @@
   "name": "jest-shallow-serializer-example",
   "private": true,
   "scripts": {
-    "test": "jest"
+    "test": "jest --no-cache"
   },
   "dependencies": {
     "react": "19.3.1",

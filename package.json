@@ -51,7 +51,7 @@
   "scripts": {
     "build": "rm -rf ./dist && tsc",
     "test": "npm run test:unit && npm run test:static",
-    "test:unit": "jest",
+    "test:unit": "jest --no-cache",
     "test:static": "tsc --noEmit"
   },
   "dependencies": {
