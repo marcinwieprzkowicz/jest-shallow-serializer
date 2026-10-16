@@ -3,9 +3,7 @@ import path from "node:path";
 import { parse } from "@babel/parser";
 import traverse from "@babel/traverse";
 import { isJSXIdentifier } from "@babel/types";
-
-const isRelative = (source: string) =>
-  source.startsWith("./") || source.startsWith("../");
+import { isRelative } from "./isRelative";
 
 // only react component starts with capital letter
 const isComponent = (name: string) => /^[A-Z]/.test(name);
