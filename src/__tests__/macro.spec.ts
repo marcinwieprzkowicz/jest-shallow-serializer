@@ -30,7 +30,7 @@ import shallowMock from "${macroPath.replace(/\\/g, "/")}";
 shallowMock("../components/Title", "Title");
 `;
 
-    const filename = path.resolve(__dirname, "example-__tests__/App.spec.tsx");
+    const filename = path.resolve(__dirname, "example/__tests__/App.spec.tsx");
     const result = babel.transformSync(code, {
       filename,
       plugins: [
@@ -45,7 +45,7 @@ shallowMock("../components/Title", "Title");
 
     // jest.mock key stays relative (resolved by Jest relative to test file)
     expect(result?.code).toContain('jest.mock("../components/Title"');
-    // shallowWrapper arg is absolute (resolved relative to dist file at runtime)
+    // `shallowWrapper` arg is absolute (resolved relative to dist file at runtime)
     expect(result?.code).toContain(`"${expectedAbsolute}"`);
   });
 

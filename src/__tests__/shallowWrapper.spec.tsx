@@ -4,6 +4,7 @@ import { shallowWrapper } from "../shallowWrapper";
 import type { TestComponentProps } from "./__fixtures__/TestComponent";
 import type { TestComponentSuspenseProps } from "./__fixtures__/TestComponentSuspense";
 import type { TestComponentContextProps } from "./__fixtures__/TestComponentContext";
+import type { ShallowWrapper } from "../types";
 
 type Component = (props: TestComponentProps) => JSX.Element;
 type ComponentTd = () => JSX.Element;
@@ -34,7 +35,7 @@ describe("shallowWrapper", () => {
   it("returns wrapped component", () => {
     const wrapper = shallowWrapper(
       "./__tests__/__fixtures__/TestComponent.tsx",
-      "TestComponent"
+      "TestComponent",
     )();
 
     expect(wrapper.mock).toBeDefined();
@@ -45,12 +46,12 @@ describe("shallowWrapper", () => {
   it("does not mock `component` by default", () => {
     const wrapper = shallowWrapper(
       "./__tests__/__fixtures__/TestComponent.tsx",
-      "TestComponent"
+      "TestComponent",
     )();
     const TestComponent = wrapper.TestComponent as Component;
 
     const { asFragment } = render(
-      <TestComponent prop="lorem ipsum">children</TestComponent>
+      <TestComponent prop="lorem ipsum">children</TestComponent>,
     );
     expect(asFragment()).toMatchSnapshot();
   });
@@ -59,13 +60,13 @@ describe("shallowWrapper", () => {
     it("mocks `component`", () => {
       const wrapper = shallowWrapper(
         "./__tests__/__fixtures__/TestComponent.tsx",
-        "TestComponent"
+        "TestComponent",
       )();
       wrapper.mock("TestComponent");
 
       const TestComponent = wrapper.TestComponent as Component;
       const { asFragment } = render(
-        <TestComponent prop="lorem ipsum">children</TestComponent>
+        <TestComponent prop="lorem ipsum">children</TestComponent>,
       );
 
       expect(asFragment()).toMatchSnapshot();
@@ -75,7 +76,7 @@ describe("shallowWrapper", () => {
     it("supports circular references", () => {
       const wrapper = shallowWrapper(
         "./__tests__/__fixtures__/TestComponent.tsx",
-        "TestComponent"
+        "TestComponent",
       )();
       wrapper.mock("TestComponent");
 
@@ -83,7 +84,7 @@ describe("shallowWrapper", () => {
       const { asFragment } = render(
         <TestComponent prop="lorem ipsum" obj={objectWithCircularReference}>
           children
-        </TestComponent>
+        </TestComponent>,
       );
 
       expect(asFragment()).toMatchSnapshot();
@@ -93,7 +94,7 @@ describe("shallowWrapper", () => {
     it("supports functions", () => {
       const wrapper = shallowWrapper(
         "./__tests__/__fixtures__/TestComponent.tsx",
-        "TestComponent"
+        "TestComponent",
       )();
       wrapper.mock("TestComponent");
 
@@ -104,7 +105,7 @@ describe("shallowWrapper", () => {
           obj={{ method: () => {}, mockMethod: jest.fn() }}
         >
           children
-        </TestComponent>
+        </TestComponent>,
       );
 
       expect(asFragment()).toMatchSnapshot();
@@ -114,14 +115,14 @@ describe("shallowWrapper", () => {
     it("supports nested component paths", () => {
       const wrapper = shallowWrapper(
         "./__tests__/__fixtures__/TestComponentContext",
-        "TestContext.Provider"
+        "TestContext.Provider",
       )();
       wrapper.mock("TestContext.Provider");
 
       const TestComponentContext =
         wrapper.TestComponentContext as ComponentContext;
       const { asFragment } = render(
-        <TestComponentContext>lorem ipsum</TestComponentContext>
+        <TestComponentContext>lorem ipsum</TestComponentContext>,
       );
 
       expect(asFragment()).toMatchSnapshot();
@@ -129,12 +130,12 @@ describe("shallowWrapper", () => {
     });
 
     describe("lazy components", () => {
-      let wrapper;
+      let wrapper: ShallowWrapper;
 
       beforeEach(() => {
         wrapper = shallowWrapper(
           "./__tests__/__fixtures__/TestComponentSuspense.tsx",
-          "TestComponentSuspense"
+          "TestComponentSuspense",
         )();
         wrapper.mock("TestComponentSuspense");
       });
@@ -156,7 +157,7 @@ describe("shallowWrapper", () => {
           <TestComponentSuspense>
             <h1>Heading</h1>
             <LazyComponent />
-          </TestComponentSuspense>
+          </TestComponentSuspense>,
         );
 
         await act(() => promise);
@@ -176,7 +177,7 @@ describe("shallowWrapper", () => {
           <TestComponentSuspense>
             <h1>Heading</h1>
             <LazyComponent />
-          </TestComponentSuspense>
+          </TestComponentSuspense>,
         );
 
         expect(asFragment()).toMatchSnapshot();
@@ -187,7 +188,7 @@ describe("shallowWrapper", () => {
     it("uses the first tag from the component body", () => {
       const wrapper = shallowWrapper(
         "./__tests__/__fixtures__/TestComponentTd.tsx",
-        "TestComponentTd"
+        "TestComponentTd",
       )();
       wrapper.mock("TestComponentTd");
 
@@ -209,13 +210,13 @@ describe("shallowWrapper", () => {
     it("uses `options.renderAs` as render tag", () => {
       const wrapper = shallowWrapper(
         "./__tests__/__fixtures__/TestComponent.tsx",
-        "TestComponent"
+        "TestComponent",
       )();
       wrapper.mock("TestComponent", { renderAs: "span" });
 
       const TestComponent = wrapper.TestComponent as Component;
       const { asFragment } = render(
-        <TestComponent prop="lorem ipsum">children</TestComponent>
+        <TestComponent prop="lorem ipsum">children</TestComponent>,
       );
 
       expect(asFragment()).toMatchSnapshot();
@@ -227,14 +228,14 @@ describe("shallowWrapper", () => {
     it("unmocks `component`", () => {
       const wrapper = shallowWrapper(
         "./__tests__/__fixtures__/TestComponent.tsx",
-        "TestComponent"
+        "TestComponent",
       )();
       wrapper.mock("TestComponent");
       wrapper.unmock("TestComponent");
 
       const TestComponent = wrapper.TestComponent as Component;
       const { asFragment } = render(
-        <TestComponent prop="lorem ipsum">children</TestComponent>
+        <TestComponent prop="lorem ipsum">children</TestComponent>,
       );
 
       expect(asFragment()).toMatchSnapshot();

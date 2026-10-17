@@ -15,12 +15,6 @@
     "target": "es2015",
     "types": ["node", "@testing-library/jest-dom"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": [
-    "node_modules",
-    "coverage",
-    "**/__tests__",
-    "src/**/*.spec.ts",
-    "src/**/*.spec.tsx"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["coverage", "dist", "node_modules"]
 }

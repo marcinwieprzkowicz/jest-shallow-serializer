@@ -49,7 +49,9 @@
     "serializer.js"
   ],
   "scripts": {
-    "build": "rm -rf ./dist && tsc",
+    "build:clean": "rm -rf ./dist",
+    "build:typescript": "tsc -p tsconfig.build.json",
+    "build": "npm run build:clean && npm run build:typescript",
     "test": "npm run test:unit && npm run test:static",
     "test:unit": "jest --no-cache",
     "test:static": "tsc --noEmit"
